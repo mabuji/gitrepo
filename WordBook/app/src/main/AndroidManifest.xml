@@ -1,0 +1,44 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.makyo.wordbook">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name="com.example.makyo.wordbook.WordsApplication"
+        android:allowBackup="true"
+
+        android:label="WordBook"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="com.example.makyo.wordbook.MainActivity"
+            android:label="WordBook"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.makyo.wordbook.WordDetailActivity"
+            android:label="详细内容" />
+        <activity
+            android:name="com.example.makyo.wordbook.MainActivity3"
+            android:label="词典" />
+        <activity
+            android:name="com.example.makyo.wordbook.MainActivity4"
+            android:label="词典" />
+        <activity
+            android:name="com.example.makyo.wordbook.Main2Activity"
+            android:label="英语新闻" />
+
+        <provider
+            android:name="com.example.makyo.wordbook.MyContentProvider"
+            android:authorities="com.example.makyo.wordbook.mycontentprovider"
+            android:enabled="true"
+            android:exported="true">
+        </provider>
+    </application>
+
+</manifest>
