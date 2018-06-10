@@ -1,6 +1,8 @@
 package com.example.makyo.player;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -52,6 +54,7 @@ public class MusicService extends Service {
     private AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = null;
 
     private final IBinder musicBinder = new MusicBinder();
+    private NotificationManager mNotificationManager;
 
 
     /*
@@ -307,9 +310,10 @@ public class MusicService extends Service {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        notification = new NotificationCompat.Builder(this,"default")
-                .setTicker("DJMusic")
+        notification = new Notification.Builder(this)
+                .setTicker("Music")
                 .setSmallIcon(android.R.drawable.ic_media_play)
                 .setContentTitle("Playing")
                 .setContentText(mMusicFilesList.get(currentIndex).getName())

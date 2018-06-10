@@ -48,6 +48,8 @@ import java.util.HashMap;
 import java.util.Locale;
 
 
+
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getCanonicalName();
 
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private File mCurrentDirectory;
 
     //显示文件及文件夹，包括隐藏文件
-    private int mOptChoiceType = FilePicker.CHOICE_TYPE_ALL;
+    private int mOptChoiceType = FilePicker.CHOICE_TYPE_FILES;
 
     //音乐播放模式
     public static final int MODE_ONE_LOOP = 0;
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private SeekBar seekBar;
     private ImageButton playPause;
+    private ImageButton playmode;
     private ImageButton previous;
     private ImageButton next;
     private TextView textView_music_name, textView_duration, textView_current_time, textView_mode;
@@ -278,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
         currentMode = MODE_ALL_LOOP;
 
         playPause = (ImageButton) findViewById(R.id.play);
+        playmode=(ImageButton) findViewById(R.id.playmode);
         previous = (ImageButton) findViewById(R.id.previous);
         next = (ImageButton) findViewById(R.id.next);
 
@@ -293,21 +297,25 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 switch (v.getId()) {
 
-                    case R.id.textView_mode:
+                    case R.id.playmode:
                         currentMode = (currentMode + 1) % 4;
                         if (musicBinder != null) {
                             musicBinder.setMode(currentMode);
                             if (currentMode == MODE_ONE_LOOP) {
                                 textView_mode.setText(R.string.music_mode_single_loop);
+                                playmode.setImageResource(R.drawable.cir1);
                                 Toast.makeText(MainActivity.this, R.string.music_mode_single_loop, Toast.LENGTH_SHORT).show();
                             } else if (currentMode == MODE_ALL_LOOP) {
                                 textView_mode.setText(R.string.music_mode_all_loop);
+                                playmode.setImageResource(R.drawable.cir);
                                 Toast.makeText(MainActivity.this, R.string.music_mode_all_loop, Toast.LENGTH_SHORT).show();
                             } else if (currentMode == MODE_RANDOM) {
                                 textView_mode.setText(R.string.music_mode_all_random);
+                                playmode.setImageResource(R.drawable.rad);
                                 Toast.makeText(MainActivity.this, R.string.music_mode_all_random, Toast.LENGTH_SHORT).show();
                             } else if (currentMode == MODE_SEQUENCE) {
                                 textView_mode.setText(R.string.music_mode_sequence);
+                                playmode.setImageResource(R.drawable.ord);
                                 Toast.makeText(MainActivity.this, R.string.music_mode_sequence, Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -324,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.previous:
                         if (musicBinder != null) {
                             musicBinder.toPrevious();
+                            playPause.setImageResource(R.drawable.play);
                         }
 
                         break;
@@ -331,6 +340,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.next:
                         if (musicBinder != null) {
                             musicBinder.toNext();
+                            playPause.setImageResource(R.drawable.play);
                         }
 
                         break;
@@ -340,6 +350,8 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("songPath", mMusicFilesList.get(currentIndex).getAbsolutePath());
                         startActivity(intent);
                         break;
+                    default:
+                        break;
 
                 }
             }
@@ -348,6 +360,7 @@ public class MainActivity extends AppCompatActivity {
         textView_mode.setOnClickListener(clickListener);
 
         playPause.setOnClickListener(clickListener);
+        playmode.setOnClickListener(clickListener);
         previous.setOnClickListener(clickListener);
         next.setOnClickListener(clickListener);
 
@@ -629,12 +642,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return mFilesList.size();
+            return mMusicFilesList.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return mFilesList.get(position);
+            return mMusicFilesList.get(position);
         }
 
         @Override
@@ -644,13 +657,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            File file = mFilesList.get(position);
+            File file = mMusicFilesList.get(position);
 
             convertView = LayoutInflater.from(mContext).inflate(mResource, parent, false);
             ImageView thumbnail = (ImageView) convertView.findViewById(R.id.thumbnail);
 
             if (file.isDirectory()) {
-                thumbnail.setImageResource(R.drawable.icon_folder);
+                //thumbnail.setImageResource(R.drawable.icon_folder);
             } else {
                 if (Arrays.asList(mAudioExtensions).contains(getFileExtension(file.getName()))) {
                     Bitmap bitmap = getBitmapFromCache(file.getAbsolutePath());
@@ -658,12 +671,14 @@ public class MainActivity extends AppCompatActivity {
                     else thumbnail.setImageBitmap(bitmap);
                 } else {
                     thumbnail.setImageResource(R.drawable.icon_file);
+
                 }
 
             }
 
             TextView filename = (TextView) convertView.findViewById(R.id.filename);
-            filename.setText(file.getName());
+            if(!file.isDirectory()){ filename.setText(file.getName());}
+
 
             TextView filesize = (TextView) convertView.findViewById(R.id.filesize);
             if (filesize != null) {
